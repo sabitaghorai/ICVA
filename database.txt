@@ -1,0 +1,243 @@
+drop database icvadatabase;
+CREATE DATABASE icvadatabase;
+USE icvadatabase;
+
+
+CREATE TABLE Language(LangID int(3) NOT NULL AUTO_INCREMENT COMMENT 'Unique Three Digits Language ID number',
+Name ENUM ('ENGLISH', 'BENGALI', 'HINDI') DEFAULT NULL COMMENT 'New Language name can be added here',
+ShortName ENUM ('ENG','BEN','HIN') DEFAULT NULL,
+PRIMARY KEY (LangID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+COMMENT="Base Table to maintain all human language details";
+
+INSERT INTO Language(LangID, Name, ShortName) values ('001', 'BENGALI', 'BEN');
+INSERT INTO Language(LangID, Name, ShortName) values ('002', 'ENGLISH', 'ENG');
+
+CREATE TABLE Subjects(SubjID int(3) NOT NULL AUTO_INCREMENT,
+Name varchar(200) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+PRIMARY KEY (SubjID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+INSERT INTO Subjects(SubjID, Name, ShortName) values ('001', 'ENGLISH', 'ENG');
+INSERT INTO Subjects(SubjID, Name, ShortName) values ('002', 'BENGALI', 'BEN');
+INSERT INTO Subjects(SubjID, Name, ShortName) values ('003', 'MATHEMATICS', 'MATH');
+INSERT INTO Subjects(SubjID, Name, ShortName) values ('004', 'PHYSICS', 'PHY');
+
+CREATE TABLE Classes(ClassID int(3) NOT NULL AUTO_INCREMENT,
+Name varchar(200) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+PRIMARY KEY (ClassID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+INSERT INTO Classes(ClassID, Name, ShortName) values ('001', 'CLASS SEVEN', 'VII');
+INSERT INTO Classes(ClassID, Name, ShortName) values ('002', 'CLASS EIGHT', 'VIII');
+
+CREATE TABLE Exams(ExamID int(3) NOT NULL AUTO_INCREMENT,
+Name varchar(200) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+PRIMARY KEY (ExamID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+INSERT INTO Exams(ExamID, Name, ShortName) values ('001', 'UNIT TEST I', 'U-I');
+INSERT INTO Exams(ExamID, Name, ShortName) values ('002', 'MADHYAMIK PARIKSHA', 'Class 10');
+
+CREATE TABLE Organizations(OrganizationID int(3) NOT NULL AUTO_INCREMENT,
+Name varchar(200) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+Type ENUM( 'Govt', 'Private', 'Govt Aided',  'NGO', 'Govt Under Taken', 'Public' ) NOT NULL,
+Address varchar(500) DEFAULT NULL,
+PRIMARY KEY (OrganizationID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+INSERT INTO Organizations(OrganizationID, Name, ShortName, Type, Address) values ('001', 'Asutosh College', 'AC', 'Govt Aided', '92, S.P. Mukherjee Road, Kolkata, Pin-700026');
+
+CREATE TABLE Experts(ExprtID int(3) AUTO_INCREMENT,
+Name varchar(500) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+OrganizationID int(3),
+ParmanentAddress varchar(500) DEFAULT NULL,
+CommunicationAddress varchar(500) DEFAULT NULL,
+Qualification varchar(500) DEFAULT NULL,
+Designation varchar(100) DEFAULT 'TEACHER',
+Experience varchar(500) DEFAULT NULL,
+JoiningDate DATE,
+PRIMARY KEY (ExprtID),
+INDEX (OrganizationID),
+FOREIGN KEY (OrganizationID)
+      REFERENCES Organizations(OrganizationID)
+      ON UPDATE CASCADE ON DELETE RESTRICT
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+
+CREATE TABLE Questions(QuesID int(12) NOT NULL AUTO_INCREMENT, 
+ExprtID int(3) Not null,
+PRIMARY KEY (QuesID),
+INDEX (ExprtID),
+QueBengText varchar (500) default null,
+QueEngText varchar (500) default null,
+FOREIGN KEY (ExprtID)
+      REFERENCES Experts(ExprtID)
+      ON UPDATE CASCADE ON DELETE RESTRICT
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+
+
+
+
+CREATE TABLE Answers(AnsID int(12) NOT NULL AUTO_INCREMENT,
+QuesID int(12) NOT NULL,
+ExprtID int(3) Not null,
+PRIMARY KEY (AnsID),
+INDEX (ExprtID),
+INDEX (QuesID),
+AnsBengText varchar (500) default null,
+AnsEngText varchar (500) default null,
+FOREIGN KEY (ExprtID)
+      REFERENCES Experts(ExprtID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (QuesID)
+      REFERENCES Questions(QuesID)
+      ON UPDATE CASCADE ON DELETE RESTRICT
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+
+
+
+
+CREATE TABLE ExamPaper(ExamPaperID int(5) NOT NULL AUTO_INCREMENT,
+Name varchar(500) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+ExamID int(3) NOT NULL,
+ClassID int(3) NOT NULL,
+SubjID int(3) NOT NULL,
+ExprtID int(3) Not null,
+FullMarks int(3) not null,
+PRIMARY KEY (ExamPaperID),
+INDEX (ClassID,SubjID,ExamID,ExprtID),
+FOREIGN KEY (ExamID)
+      REFERENCES Exams(ExamID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (ClassID)
+      REFERENCES Classes(ClassID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (SubjID)
+      REFERENCES Subjects(SubjID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (ExprtID)
+      REFERENCES Experts(ExprtID)
+      ON UPDATE CASCADE ON DELETE RESTRICT
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+
+CREATE TABLE MCQPaperSet(QuesSN int(3) NOT NULL AUTO_INCREMENT,
+QuesID int(12) NOT NULL, 
+ExamPaperID int(5) NOT NULL,
+LangID int(3) NOT NULL,
+Option1 varchar(100) not null,
+Option2 varchar(100) not null,
+Option3 varchar(100) not null,
+Option4 varchar(100) not null,
+Marks int(2) not null,
+HarderRank int(1) not null,
+FOREIGN KEY (QuesID)
+      REFERENCES Questions(QuesID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (ExamPaperID)
+      REFERENCES ExamPaper(ExamPaperID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (LangID)
+      REFERENCES Language(LangID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+PRIMARY KEY(QuesSN))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+
+CREATE TABLE PaperSet(QuesSN int(3) NOT NULL AUTO_INCREMENT,
+QuesID int(12) NOT NULL, 
+ExamPaperID int(5) NOT NULL,
+LangID int(3) NOT NULL,
+Marks int(2) not null,
+HarderRank int(1) not null,
+FOREIGN KEY (QuesID)
+      REFERENCES Questions(QuesID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (ExamPaperID)
+      REFERENCES ExamPaper(ExamPaperID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (LangID)
+      REFERENCES Language(LangID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+PRIMARY KEY(QuesSN))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+
+CREATE TABLE Country(CountryID int(3) NOT NULL AUTO_INCREMENT,
+Name varchar(200) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+PRIMARY KEY (CountryID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+INSERT INTO Country(CountryID, Name, ShortName) values ('001', 'INDIA', 'IND');
+
+CREATE TABLE State(StateID int(3) NOT NULL AUTO_INCREMENT,
+Name varchar(200) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+PRIMARY KEY (StateID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+INSERT INTO State(StateID, Name, ShortName) values ('001', 'West Bengal', 'WB');
+
+CREATE TABLE District(DistID int(3) NOT NULL AUTO_INCREMENT,
+Name varchar(200) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+PRIMARY KEY (DistID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+INSERT INTO District(DistID, Name, ShortName) values ('001', 'East Midnapore', 'EM');
+
+CREATE TABLE Subdivision(SubDivID int(3) NOT NULL AUTO_INCREMENT,
+Name varchar(200) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+PRIMARY KEY (SubDivID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+INSERT INTO Subdivision(SubDivID, Name, ShortName) values ('001', 'Contai', 'Cont');
+
+CREATE TABLE Students(StdID int(6) NOT NULL AUTO_INCREMENT,
+    FName VARCHAR(20) NOT NULL,
+    MName VARCHAR(20) NOT NULL,
+    LName VARCHAR(20) NOT NULL,
+    Title ENUM('Mr.', 'Mrs.', 'Master', 'Miss', 'Sri', 'Sk', 'Dr.') NOT NULL,
+    FatherName varchar(100),
+    MotherName varchar(100),
+    ClassID int(3) NOT NULL,
+    Gender ENUM('FEMALE','MALE', 'TRANSGENTER') NOT NULL,
+    DoA DATE not null,
+    PAddress VARCHAR(20) NOT NULL,
+    PSubDivID int(3) NOT NULL,
+    FOREIGN KEY (ClassID)
+      REFERENCES Classes(ClassID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (PSubDivID)
+      REFERENCES Subdivision(SubDivID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    PDistID int(3) NOT NULL,
+    FOREIGN KEY (PDistID)
+      REFERENCES District(DistID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    PStateID int(3) NOT NULL,
+    FOREIGN KEY (PStateID)
+      REFERENCES State(StateID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    PCountryID int(3) NOT NULL,
+    FOREIGN KEY (PCountryID)
+      REFERENCES Country(CountryID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    PPinCode int(7) NOT NULL,
+    CAddress VARCHAR(20) NOT NULL,
+    CSubDivID int(3) NOT NULL,
+    FOREIGN KEY (CSubDivID)
+      REFERENCES Subdivision(SubDivID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    CDistID int(3) NOT NULL,
+    FOREIGN KEY (CDistID)
+      REFERENCES District(DistID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    CStateID int(3) NOT NULL,
+    FOREIGN KEY (CStateID)
+      REFERENCES State(StateID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    CCountryID int(3) NOT NULL,
+    FOREIGN KEY (CCountryID)
+      REFERENCES Country(CountryID)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    CPinCode int(7) NOT NULL,
+    EmailAddress varchar(100), 
+    AltEmailAddress varchar(100),
+    MobileNo int(10) not null,
+    AltMobileNo int(10),
+    PRIMARY KEY (StdID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+
+CREATE TABLE Courses(CourseID int(3) NOT NULL AUTO_INCREMENT,
+Name varchar(200) DEFAULT NULL,
+ShortName varchar(10) DEFAULT NULL,
+PRIMARY KEY (CourseID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+INSERT INTO Courses(CourseID, Name, ShortName) values ('001', 'Computer Science', 'CS');
+desc Questions;

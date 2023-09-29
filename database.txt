@@ -3,6 +3,7 @@ CREATE DATABASE icvadatabase;
 USE icvadatabase;
 
 
+
 CREATE TABLE Language(LangID int(3) NOT NULL AUTO_INCREMENT COMMENT 'Unique Three Digits Language ID number',
 Name ENUM ('ENGLISH', 'BENGALI', 'HINDI') DEFAULT NULL COMMENT 'New Language name can be added here',
 ShortName ENUM ('ENG','BEN','HIN') DEFAULT NULL,
@@ -117,6 +118,7 @@ FOREIGN KEY (ExprtID)
       ON UPDATE CASCADE ON DELETE RESTRICT
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
 
+
 CREATE TABLE MCQPaperSet(QuesSN int(3) NOT NULL AUTO_INCREMENT,
 QuesID int(12) NOT NULL, 
 ExamPaperID int(5) NOT NULL,
@@ -190,50 +192,51 @@ CREATE TABLE Students(StdID int(6) NOT NULL AUTO_INCREMENT,
     Gender ENUM('FEMALE','MALE', 'TRANSGENTER') NOT NULL,
     DoA DATE not null,
     PAddress VARCHAR(20) NOT NULL,
-    PSubDivID int(3) NOT NULL,
+    PSubDivID int(3) ,
     FOREIGN KEY (ClassID)
       REFERENCES Classes(ClassID)
       ON UPDATE CASCADE ON DELETE RESTRICT,
     FOREIGN KEY (PSubDivID)
       REFERENCES Subdivision(SubDivID)
       ON UPDATE CASCADE ON DELETE RESTRICT,
-    PDistID int(3) NOT NULL,
+    PDistID int(3) ,
     FOREIGN KEY (PDistID)
       REFERENCES District(DistID)
       ON UPDATE CASCADE ON DELETE RESTRICT,
-    PStateID int(3) NOT NULL,
+    PStateID int(3) ,
     FOREIGN KEY (PStateID)
       REFERENCES State(StateID)
       ON UPDATE CASCADE ON DELETE RESTRICT,
-    PCountryID int(3) NOT NULL,
+    PCountryID int(3),
     FOREIGN KEY (PCountryID)
       REFERENCES Country(CountryID)
       ON UPDATE CASCADE ON DELETE RESTRICT,
-    PPinCode int(7) NOT NULL,
-    CAddress VARCHAR(20) NOT NULL,
-    CSubDivID int(3) NOT NULL,
+    PPinCode int(7) ,
+    CAddress VARCHAR(20) ,
+    CSubDivID int(3) ,
     FOREIGN KEY (CSubDivID)
       REFERENCES Subdivision(SubDivID)
       ON UPDATE CASCADE ON DELETE RESTRICT,
-    CDistID int(3) NOT NULL,
+    CDistID int(3),
     FOREIGN KEY (CDistID)
       REFERENCES District(DistID)
       ON UPDATE CASCADE ON DELETE RESTRICT,
-    CStateID int(3) NOT NULL,
+    CStateID int(3) ,
     FOREIGN KEY (CStateID)
       REFERENCES State(StateID)
       ON UPDATE CASCADE ON DELETE RESTRICT,
-    CCountryID int(3) NOT NULL,
+    CCountryID int(3) ,
     FOREIGN KEY (CCountryID)
       REFERENCES Country(CountryID)
       ON UPDATE CASCADE ON DELETE RESTRICT,
-    CPinCode int(7) NOT NULL,
+    CPinCode int(7) ,
     EmailAddress varchar(100), 
     AltEmailAddress varchar(100),
     MobileNo int(10) not null,
     AltMobileNo int(10),
     PRIMARY KEY (StdID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
+drop table Students;
 
 CREATE TABLE Courses(CourseID int(3) NOT NULL AUTO_INCREMENT,
 Name varchar(200) DEFAULT NULL,
@@ -241,3 +244,5 @@ ShortName varchar(10) DEFAULT NULL,
 PRIMARY KEY (CourseID))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT="Base Table to maintain all human language details";
 INSERT INTO Courses(CourseID, Name, ShortName) values ('001', 'Computer Science', 'CS');
 desc Questions;
+
+select * from Experts;
